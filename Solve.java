@@ -1,3 +1,5 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Solve{
@@ -12,37 +14,58 @@ public class Solve{
         
         b[6] = 2;
         b[19] = 5;
-        b[12] = 9;
-        b[11] = 10;
 
         int[] moves = {3, 1};
 
         display(b);
-        oneSolve(b, 3, 0);
-        
-    }
-
-    public static void oneSolve(int[] b, int move, int start){
-        // if 0, do nothing
-        //otherwise, show what would happen if that move were made
-        int length = b.length;
-        
-        for(int i = start; i < length; i++){
-            if(b[i] == 0)
-                continue;
-            else{
-                showFuture(b, move, i);
-            }
+        System.out.println();
+        // ArrayList<int[]> a = oneSolve(b, 3, 0);
+        // for(int[] c : a){
+        //     display(c);
+        // }
+        ArrayList<int[]> c = twoSolve(b, moves);
+        for(int[] d : c){
+            display(d);
         }
     }
 
-    public  static void showFuture(int[] b, int move, int index){
+    public static ArrayList<int[]> oneSolve(int[] b, int move, int start){
+        // if 0, do nothing
+        //otherwise, show what would happen if that move were made
+        ArrayList<int[]> result = new ArrayList<int[]>(0);
+        for(int i = start; i < 24; i++){
+            if(b[i] == 0)
+                continue;
+            else{
+                result.add(showFuture(b, move, i));
+            }
+        }
+        return result;
+    }
+
+    public static ArrayList<int[]> twoSolve(int[] b, int[] moves){
+        ArrayList<int[]> result = new ArrayList<int[]>(0);
+        ArrayList<int[]> firstLayer = oneSolve(b, moves[0], 0);
+        addArrayList(result, firstLayer);
+        for(int[] a : firstLayer){
+            ArrayList<int[]> nextSetOfSolves = oneSolve(a, moves[1], 0);
+            addArrayList(result, nextSetOfSolves);
+        }
+        return result;
+    }
+
+    public static void addArrayList(ArrayList<int[]> input, ArrayList<int[]> toBeAdded){
+        for(int[] a : toBeAdded)
+            input.add(a);
+    }
+
+    public static int[] showFuture(int[] b, int move, int index){
         int[] a = Arrays.copyOf(b, b.length);
         a[index]--;
         if(index >= move){
             a[index - move]++;
         }
-        display(a);
+        return a;
     }
 
     public static void display(int[] b){
