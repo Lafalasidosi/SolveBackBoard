@@ -7,20 +7,21 @@ public class Solve {
 
     public static void main(String[] args) {
 
-        int[] b = new int[24];
-        for (int i = 0; i < 24; i++) {
+        int[] b = new int[8];
+        for (int i = 0; i < 8; i++) {
             b[i] = 0;
         }
 
-        b[6] = 2;
-        b[2] = -2;
-        b[19] = 7;
+        b[3] = 2;
+        //b[2] = -2;
+        //b[15] = -2;
+        b[7] = 7;
 
-        int[] moves = { 4, 1 };
+        int[] moves = { 2, 1 };
 
         display(b);
         System.out.println();
-        ArrayList<int[]> a = oneSolve(b, 4);
+        ArrayList<int[]> a = twoSolve(b, moves);
         for (int[] c : a) {
             display(c);
         }
@@ -47,7 +48,7 @@ public class Solve {
         // if 0, do nothing
         // otherwise, show what would happen if that move were made
         ArrayList<int[]> result = new ArrayList<int[]>(0);
-        for (int i = 0; i < 24; i++) {
+        for (int i = 0; i < 8; i++) {
             if (b[i] <= 0)
                 continue;
             else {
@@ -67,9 +68,26 @@ public class Solve {
      * @param moves
      * @return
      */
-    // public static ArrayList<int[]> twoSolve(int[] b, int[] moves) {
-
-    // }
+    public static ArrayList<int[]> twoSolve(int[] b, int[] moves) {
+        ArrayList<int[]> result = new ArrayList<int[]>(0);
+        ArrayList<int[]> firstChoice = new ArrayList<int[]>(0);
+        ArrayList<int[]> secondChoice = new ArrayList<int[]>(0);
+        ArrayList<int[]> firstChoiceResult = new ArrayList<int[]>(0);
+        ArrayList<int[]> secondChoiceResult = new ArrayList<int[]>(0);
+        firstChoice = oneSolve(b, moves[0]);
+        secondChoice = oneSolve(b, moves[1]);
+        for(int[] a : firstChoice){
+            addArrayList(firstChoiceResult, oneSolve(a, moves[1]));
+        }
+        for(int[] a : secondChoice){
+            addArrayList(secondChoiceResult, oneSolve(a, moves[0]));
+        }
+        
+        ArrayList<int[]> intersection = intersect(secondChoiceResult, firstChoiceResult);
+        addArrayList(result, firstChoiceResult);
+        addArrayList(result, secondChoice);
+        return intersection.size() > 0 ? intersection : result;
+    }
 
     public static void addArrayList(ArrayList<int[]> input, ArrayList<int[]> toBeAdded) {
         for (int[] a : toBeAdded)
@@ -79,9 +97,16 @@ public class Solve {
     public static ArrayList<int[]> intersect(ArrayList<int[]> a, ArrayList<int[]> b) {
         // look for elements common to both
         ArrayList<int[]> result = new ArrayList<int[]>(0);
-        for (int[] array : a) {
-            if (b.contains(array))
-                result.add(array);
+        int aSize, bSize;
+        aSize = a.size();
+        bSize = b.size();
+        for(int i = 0; i < aSize; i++){
+            for(int j = 0; j < bSize; j++){
+                if(areEqual(a.get(i), b.get(j))){
+                    result.add(a.get(i));
+                    break;
+                }
+            }
         }
         return result;
     }
