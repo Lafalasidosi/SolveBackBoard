@@ -3,7 +3,7 @@ package IllegalMoveException;
 public class IllegalMoveException extends RuntimeException{
     
     public IllegalMoveException(){
-        super("You cannot make that move");
+        super("You cannot make that move.\n");
     }
 
     public IllegalMoveException(String msg){
