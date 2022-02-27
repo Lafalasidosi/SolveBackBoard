@@ -12,19 +12,18 @@ public class Solve {
             b[i] = 0;
         }
 
+        b[2] = -2;
         b[3] = 2;
-        //b[2] = -2;
-        //b[15] = -2;
         b[7] = 7;
+        //b[5] = -2;
 
         int[] moves = { 2, 1 };
 
         display(b);
         System.out.println();
         ArrayList<int[]> a = twoSolve(b, moves);
-        for (int[] c : a) {
-            display(c);
-        }
+        System.out.println("final results: ");
+        displayArrayList(a);
         // ArrayList<int[]> c = twoSolve(b, moves);
         // for (int[] d : c) {
         // display(d);
@@ -75,15 +74,23 @@ public class Solve {
         ArrayList<int[]> firstChoiceResult = new ArrayList<int[]>(0);
         ArrayList<int[]> secondChoiceResult = new ArrayList<int[]>(0);
         firstChoice = oneSolve(b, moves[0]);
+        System.out.println("results of choosing first die first:");
+        displayArrayList(firstChoice);
         secondChoice = oneSolve(b, moves[1]);
+        System.out.println("results of choosing second die: first");
+        displayArrayList(secondChoice);
+        System.out.println("\n analyzing results of next choices...");
         for(int[] a : firstChoice){
             addArrayList(firstChoiceResult, oneSolve(a, moves[1]));
         }
+        displayArrayList(firstChoiceResult);
         for(int[] a : secondChoice){
             addArrayList(secondChoiceResult, oneSolve(a, moves[0]));
         }
-        
+        displayArrayList(secondChoiceResult);
+        System.out.println("\n results common to both choices:");
         ArrayList<int[]> intersection = intersect(secondChoiceResult, firstChoiceResult);
+        displayArrayList(intersection);
         addArrayList(result, firstChoiceResult);
         addArrayList(result, secondChoice);
         return intersection.size() > 0 ? intersection : result;
@@ -125,6 +132,13 @@ public class Solve {
         }
         
         return a;
+    }
+
+    public static void displayArrayList(ArrayList<int[]> arr){
+        for(int[] a : arr){
+            display(a);
+        }
+        System.out.println();
     }
 
     public static void display(int[] b) {
