@@ -21,13 +21,10 @@ public class Solve {
 
         display(b);
         System.out.println();
-        ArrayList<int[]> a = twoSolve(b, moves);
+        ArrayList<String> a = oneSolve(b, moves[0]);
         System.out.println("final results: ");
         displayArrayList(a);
-        // ArrayList<int[]> c = twoSolve(b, moves);
-        // for (int[] d : c) {
-        // display(d);
-        // }
+         
     }
 
     /**
@@ -40,13 +37,12 @@ public class Solve {
      * 
      * @param b
      * @param move
-     * @param start
      * @return result return the list of possible resultant boards
      */
-    public static ArrayList<int[]> oneSolve(int[] b, int move) {
+    public static ArrayList<String> oneSolve(int[] b, int move) {
         // if 0, do nothing
         // otherwise, show what would happen if that move were made
-        ArrayList<int[]> result = new ArrayList<int[]>(0);
+        ArrayList<String> result = new ArrayList<String>(0);
         for (int i = 0; i < 8; i++) {
             if (b[i] <= 0)
                 continue;
@@ -67,43 +63,43 @@ public class Solve {
      * @param moves
      * @return
      */
-    public static ArrayList<int[]> twoSolve(int[] b, int[] moves) {
-        ArrayList<int[]> result = new ArrayList<int[]>(0);
-        ArrayList<int[]> firstChoice = new ArrayList<int[]>(0);
-        ArrayList<int[]> secondChoice = new ArrayList<int[]>(0);
-        ArrayList<int[]> firstChoiceResult = new ArrayList<int[]>(0);
-        ArrayList<int[]> secondChoiceResult = new ArrayList<int[]>(0);
+    public static ArrayList<String> twoSolve(int[] b, int[] moves) {
+        ArrayList<String> result = new ArrayList<String>(0);
+        ArrayList<String> firstChoice = new ArrayList<String>(0);
+        ArrayList<String> secondChoice = new ArrayList<String>(0);
+        ArrayList<String> firstChoiceResult = new ArrayList<String>(0);
+        ArrayList<String> secondChoiceResult = new ArrayList<String>(0);
         firstChoice = oneSolve(b, moves[0]);
-        System.out.println("results of choosing first die first:");
-        displayArrayList(firstChoice);
-        secondChoice = oneSolve(b, moves[1]);
-        System.out.println("results of choosing second die: first");
-        displayArrayList(secondChoice);
+        //System.out.println("results of choosing first die first:");
+        //displayArrayList(firstChoice);
+        //secondChoice = oneSolve(b, moves[1]);
+        //System.out.println("results of choosing second die: first");
+        //displayArrayList(secondChoice);
         System.out.println("\n analyzing results of next choices...");
-        for(int[] a : firstChoice){
-            addArrayList(firstChoiceResult, oneSolve(a, moves[1]));
-        }
-        displayArrayList(firstChoiceResult);
-        for(int[] a : secondChoice){
-            addArrayList(secondChoiceResult, oneSolve(a, moves[0]));
-        }
-        displayArrayList(secondChoiceResult);
-        System.out.println("\n results common to both choices:");
-        ArrayList<int[]> intersection = intersect(secondChoiceResult, firstChoiceResult);
-        displayArrayList(intersection);
+        //for(String a : firstChoice){
+            //addArrayList(firstChoiceResult, oneSolve(a, moves[1]));
+        //}
+        //displayArrayList(firstChoiceResult);
+        //for(String a : secondChoice){
+            //addArrayList(secondChoiceResult, oneSolve(a, moves[0]));
+        //}
+        //displayArrayList(secondChoiceResult);
+        //System.out.println("\n results common to both choices:");
+        ArrayList<String> intersection = intersect(secondChoiceResult, firstChoiceResult);
+        //displayArrayList(intersection);
         addArrayList(result, firstChoiceResult);
         addArrayList(result, secondChoice);
         return intersection.size() > 0 ? intersection : result;
     }
 
-    public static void addArrayList(ArrayList<int[]> input, ArrayList<int[]> toBeAdded) {
-        for (int[] a : toBeAdded)
+    public static void addArrayList(ArrayList<String> input, ArrayList<String> toBeAdded) {
+        for (String a : toBeAdded)
             input.add(a);
     }
 
-    public static ArrayList<int[]> intersect(ArrayList<int[]> a, ArrayList<int[]> b) {
+    public static ArrayList<String> intersect(ArrayList<String> a, ArrayList<String> b) {
         // look for elements common to both
-        ArrayList<int[]> result = new ArrayList<int[]>(0);
+        ArrayList<String> result = new ArrayList<String>(0);
         int aSize, bSize;
         aSize = a.size();
         bSize = b.size();
@@ -118,25 +114,20 @@ public class Solve {
         return result;
     }
 
-    public static int[] showFuture(int[] b, int move, int index) {
-        int[] a = Arrays.copyOf(b, b.length);
-        int moveTo = a[index - move];
+    public static String showFuture(int[] b, int move, int index) {
+       // int[] a = Arrays.copyOf(b, b.length);
+        String result;
+        int moveTo = b[index - move];
         if (index >= move && moveTo > -2) {
-            a[index]--;
-            if (moveTo > -1)
-                a[index - move]++;
-            else
-                a[index - move] += 2;
+            return String.format("%d/%d", ++index, ++moveTo);
         } else {
             throw new IllegalMoveException();
         }
-        
-        return a;
     }
 
-    public static void displayArrayList(ArrayList<int[]> arr){
-        for(int[] a : arr){
-            display(a);
+    public static void displayArrayList(ArrayList<String> arr){
+        for(String a : arr){
+            displayString(a);
         }
         System.out.println();
     }
@@ -147,7 +138,11 @@ public class Solve {
         System.out.println();
     }
 
-    public static void prune(ArrayList<int[]> a) {
+    public static void displayString(String s){
+        System.out.printf("%s,", s);
+    }
+
+    public static void prune(ArrayList<String> a) {
         int length = a.size();
         for (int i = 0; i < length - 1; i++) {
             for (int j = i + 1; j < length; j++) {
@@ -159,10 +154,10 @@ public class Solve {
         }
     }
 
-    public static boolean areEqual(int[] a, int[] b) {
-        int l = a.length;
+    public static boolean areEqual(String a, String b) {
+        int l = a.length();
         for (int i = 0; i < l; i++) {
-            if (a[i] != b[i])
+            if (a.charAt(i) != b.charAt(i))
                 return false;
         }
 
