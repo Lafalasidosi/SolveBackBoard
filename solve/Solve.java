@@ -23,12 +23,16 @@ public class Solve {
         b[7] = 7;
 
         int[] diceRolls = { 2, 1 };
+        int[] reverseDiceRolls = {1,2};
 
         // test move solver
         displayBoard(b);
         System.out.println();
 
         solve(b, plies, diceRolls);
+        solve(b, plies, reverseDiceRolls);
+
+        prune(moves);
 
          for(Move m : moves)
              System.out.println(m.toString());
@@ -36,17 +40,19 @@ public class Solve {
     }
 
     /**
-    * Want: a recursive method to solve a backgammon board
-    * First off, the case for returning is if you have no more moves to work with
+    * Want: First off, the case for returning is if you have no more moves to work with
+    * or you reach the end of the board
+    * Also, whenever you derecurse, the last ply found should be deleted
+    * If an illegal move is encountered, do nothing and continue
     */
     public static void solve(int[] board, ArrayList<Ply> plies, int[] rollsLeft){
-        //
+        // "base case"
         if(rollsLeft.length == 0){
             moves.add(new Move(plies));
-            if(plies.size() > 0)
-                plies.remove(plies.size() - 1);
+            plies.remove(plies.size() - 1);
             return;
         }
+
        int l = board.length;
        int[] boardCopy = Arrays.copyOf(board, board.length);
        for(int i = 0; i < l; i++){
@@ -67,8 +73,47 @@ public class Solve {
                 solve(boardCopy, plies, subarray(rollsLeft)); 
             }
        }
+       if(plies.size() > 0) // remove last ply whenever method returns
+           plies.remove(plies.size() - 1);
+    }
+
+    public static void prune(ArrayList<Move> moves){
+        if(contains2PlyMove(moves)){
+            remove1PlyMoves(moves);
+        }
+
+        int length = moves.size();
+        for(int i = 0; i < length; i++){
+            for(int j = i; j < length; j++){
+                if(moves.get(i).equals(moves.get(j))){
+                    moves.remove(j);
+                    length--;
+                }
+            }
+        }
+    }
+
+    public static boolean contains2PlyMove(ArrayList<Move> moves){
+        for(Move m : moves){
+            if(m.getSize() == 2)
+                return true;
+        }
+        return false;
+    }
+
+    public static void remove1PlyMoves(ArrayList<Move> moves){
+        for(Move m : moves){
+            if(m.getSize() == 1)
+                moves.remove(m);
+        }
     }
     
+    /**
+     * Ham-fisted way of shortening the rollsLeft array in solve().
+     * 
+     * @param arr
+     * @return
+     */
     public static int[] subarray(int[] arr){
         int[] result;
         if(arr.length == 2){

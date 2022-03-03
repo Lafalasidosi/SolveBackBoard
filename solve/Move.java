@@ -31,6 +31,21 @@ public class Move{
         return plies.get(1);
     }
 
+    public int getSize(){
+        return plies.size();
+    }
+
+    public boolean equals(Move m){
+        if(this.getSize() != m.getSize())
+            return false;
+        if(m.getSize() == 1){
+            if(this.getPly1().equals(m.getPly1()))
+                return true;
+        }
+        return (this.getPly1().equals(m.getPly2()) && this.getPly2().equals(m.getPly1())) || 
+        (this.getPly1().equals(m.getPly1()) && this.getPly2().equals(m.getPly2()));
+    }
+
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();

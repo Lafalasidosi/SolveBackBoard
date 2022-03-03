@@ -27,6 +27,12 @@ public class Ply{
         return Integer.parseInt(move.split("/")[1]);
     }
 
+    public boolean equals(Ply p){
+        boolean startSame = this.getStartPoint() == p.getStartPoint();
+        boolean endSame = this.getEndPoint() == p.getEndPoint();
+        return startSame && endSame;
+    }
+
     @Override
     public String toString(){
         return move;
