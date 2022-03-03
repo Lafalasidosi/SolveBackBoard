@@ -23,6 +23,10 @@ public class Solve {
             board = FileReader.extractBoard(boards.get(i));
             diceRolls = FileReader.extractDiceRolls(boards.get(i));
             reverseDiceRolls = new int[]{diceRolls[1], diceRolls[0]};
+            if(diceRolls[0] == diceRolls[1]){
+                diceRolls = timesTwo(diceRolls);
+                reverseDiceRolls = timesTwo(reverseDiceRolls);
+            }
 
             System.out.println();
             displayBoard(board);
@@ -127,9 +131,10 @@ public class Solve {
      */
     public static int[] subarray(int[] arr){
         int[] result;
-        if(arr.length == 2){
-            result = new int[1];
-            result[0] = arr[1];
+        if(arr.length > 1){
+            result = new int[arr.length - 1];
+            for(int i = 0; i < arr.length -1; i++)
+                result[i] = arr[i+1];
         }
         else{
             result = new int[0];
@@ -140,6 +145,13 @@ public class Solve {
     public static void displayBoard(int[] b){
         for(int a : b)
             System.out.printf("%d,", a);
+    }
+
+    public static int[] timesTwo(int[] x){
+        int[] result = new int[4];
+        for(int i = 0; i < 4; i++)
+            result[i] = x[0];
+        return result;
     }
 
 }
