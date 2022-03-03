@@ -11,28 +11,33 @@ public class Solve {
     public static ArrayList<Ply> plies = new ArrayList<Ply>(0);
 
     public static void main(String[] args) {
+        ArrayList<String[]> boards = FileReader.getBoards(new String[]{"data.txt"});
+        int[] board;
+        int[] diceRolls;
+        int[] reverseDiceRolls;
 
         // take a board from input
         // (translate from Casperson's format to mine)
         // return possible moves
-        ArrayList<String[]> boards = FileReader.getBoards(new String[]{"data.txt"});
-        int[] b = FileReader.extractBoard(boards.get(0));
+        for(int i = 0; i < boards.size(); i++){
+            board = FileReader.extractBoard(boards.get(i));
+            diceRolls = FileReader.extractDiceRolls(boards.get(i));
+            reverseDiceRolls = new int[]{diceRolls[1], diceRolls[0]};
 
+            System.out.println();
+            displayBoard(board);
+            System.out.println("\nLegal moves for this board:");
 
-        int[] diceRolls = FileReader.extractDiceRolls(boards.get(0));
-        int[] reverseDiceRolls = {diceRolls[1], diceRolls[0]};
+            solve(board, plies, diceRolls);
+            solve(board, plies, reverseDiceRolls);
 
-        System.out.println();
-        displayBoard(b);
-        System.out.println("\nLegal moves for this board:");
+            prune(moves);
 
-        solve(b, plies, diceRolls);
-        solve(b, plies, reverseDiceRolls);
+            for(Move m : moves){
+                System.out.println(m.toString());
+            }
 
-        prune(moves);
-
-        for(Move m : moves){
-            System.out.println(m.toString());
+            moves.clear();
         }
     }
 
