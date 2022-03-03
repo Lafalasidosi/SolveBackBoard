@@ -1,7 +1,9 @@
 package solve;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import IllegalMoveException.IllegalMoveException;
+import readFile.FileReader;
 
 public class Solve {
     
@@ -10,34 +12,28 @@ public class Solve {
 
     public static void main(String[] args) {
 
-        ArrayList<Ply> plies = new ArrayList<Ply>(0);
+        // take a board from input
+        // (translate from Casperson's format to mine)
+        // return possible moves
+        ArrayList<String[]> boards = FileReader.getBoards(new String[]{"data.txt"});
+        int[] b = FileReader.extractBoard(boards.get(0));
 
-        // start with an 8-point board
-        int[] b = new int[8];
-        for (int i = 0; i < 8; i++) {
-            b[i] = -2;
-        }
 
-        // fill test spots
-        b[3] = 2;
-        b[2] = 0;
-        b[7] = 7;
+        int[] diceRolls = FileReader.extractDiceRolls(boards.get(0));
+        int[] reverseDiceRolls = {diceRolls[1], diceRolls[0]};
 
-        int[] diceRolls = { 2, 1 };
-        int[] reverseDiceRolls = {1,2};
-
-        // test move solver
-        displayBoard(b);
         System.out.println();
+        displayBoard(b);
+        System.out.println("\nLegal moves for this board:");
 
         solve(b, plies, diceRolls);
         solve(b, plies, reverseDiceRolls);
 
         prune(moves);
 
-         for(Move m : moves)
-             System.out.println(m.toString());
-         
+        for(Move m : moves){
+            System.out.println(m.toString());
+        }
     }
 
     /**
@@ -45,6 +41,7 @@ public class Solve {
     * or you reach the end of the board
     * Also, whenever you derecurse, the last ply found should be deleted
     * If an illegal move is encountered, do nothing and continue
+    * automatically handles "doubles" since size of rollsLeft is barely mentioned.
     */
     public static void solve(int[] board, ArrayList<Ply> plies, int[] rollsLeft){
         // "base case"
@@ -85,10 +82,12 @@ public class Solve {
     }
 
     public static void prune(ArrayList<Move> moves){
+        // if you can use both dice, you must
         if(contains2PlyMove(moves)){
             remove1PlyMoves(moves);
         }
 
+        // remove any duplicate entries
         int length = moves.size();
         for(int i = 0; i < length; i++){
             for(int j = i+1; j < length; j++){
@@ -110,10 +109,8 @@ public class Solve {
 
     public static void remove1PlyMoves(ArrayList<Move> moves){
         for(int i = 0; i < moves.size(); i++){
-            for(int j = i + 1; j < moves.size(); j++){
-                if(moves.get(i).getSize() == 1)
-                    moves.remove(i);
-            }
+            if(moves.get(i).getSize() == 1)
+                moves.remove(i);
         }
     }
     
@@ -138,8 +135,6 @@ public class Solve {
     public static void displayBoard(int[] b){
         for(int a : b)
             System.out.printf("%d,", a);
-
-        System.out.println("\n");
     }
 
 }

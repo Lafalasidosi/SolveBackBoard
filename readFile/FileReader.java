@@ -15,7 +15,7 @@ public class FileReader{
                 results.add(input.nextLine().replaceAll("[\\s+]", "").replace(';', ',').split(","));
             }
         } catch(IOException e){
-            System.out.println("Done goofed.");
+            System.err.println("Done goofed.");
             System.exit(1);
         }
 
@@ -29,5 +29,9 @@ public class FileReader{
             result[i-2] = Integer.parseInt(input[i]);
        
         return result;
+    }
+
+    public static int[] extractDiceRolls(String[] input){
+        return new int[]{Integer.parseInt(input[26]), Integer.parseInt(input[27])};
     }
 }
