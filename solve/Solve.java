@@ -15,11 +15,12 @@ public class Solve {
         // start with an 8-point board
         int[] b = new int[8];
         for (int i = 0; i < 8; i++) {
-            b[i] = 0;
+            b[i] = -2;
         }
 
         // fill test spots
         b[3] = 2;
+        b[2] = 0;
         b[7] = 7;
 
         int[] diceRolls = { 2, 1 };
@@ -56,7 +57,7 @@ public class Solve {
        int l = board.length;
        int[] boardCopy = Arrays.copyOf(board, board.length);
        for(int i = 0; i < l; i++){
-            if(board[i] == 0)
+            if(board[i] < 1)
                 continue;
             else{
                 int moveTo = boardCopy[i - rollsLeft[0]];
@@ -67,14 +68,20 @@ public class Solve {
                         boardCopy[i - rollsLeft[0]]++;
                     else
                         boardCopy[i - rollsLeft[0]] += 2;
-                 } //else {
-                //     throw new IllegalMoveException(); // might have to leave this out
-                // }
+                 } else {
+                    // plies.add(new Ply(i+1, i+1-rollsLeft[0]));
+                    // moves.add(new Move(plies));
+                    // plies.remove(plies.size() - 1);
+                    continue;
+                 }
                 solve(boardCopy, plies, subarray(rollsLeft)); 
             }
        }
        if(plies.size() > 0) // remove last ply whenever method returns
-           plies.remove(plies.size() - 1);
+            moves.add(new Move(plies));
+            if(plies.size() > 0)
+                plies.remove(plies.size() - 1);
+            return;
     }
 
     public static void prune(ArrayList<Move> moves){
@@ -84,7 +91,7 @@ public class Solve {
 
         int length = moves.size();
         for(int i = 0; i < length; i++){
-            for(int j = i; j < length; j++){
+            for(int j = i+1; j < length; j++){
                 if(moves.get(i).equals(moves.get(j))){
                     moves.remove(j);
                     length--;
@@ -102,9 +109,11 @@ public class Solve {
     }
 
     public static void remove1PlyMoves(ArrayList<Move> moves){
-        for(Move m : moves){
-            if(m.getSize() == 1)
-                moves.remove(m);
+        for(int i = 0; i < moves.size(); i++){
+            for(int j = i + 1; j < moves.size(); j++){
+                if(moves.get(i).getSize() == 1)
+                    moves.remove(i);
+            }
         }
     }
     

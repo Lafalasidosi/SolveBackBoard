@@ -41,6 +41,7 @@ public class Move{
         if(m.getSize() == 1){
             if(this.getPly1().equals(m.getPly1()))
                 return true;
+            else return false;
         }
         return (this.getPly1().equals(m.getPly2()) && this.getPly2().equals(m.getPly1())) || 
         (this.getPly1().equals(m.getPly1()) && this.getPly2().equals(m.getPly2()));
