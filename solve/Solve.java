@@ -5,9 +5,12 @@ import IllegalMoveException.IllegalMoveException;
 
 public class Solve {
     
-    public static ArrayList<Move> moves;
+    public static ArrayList<Move> moves = new ArrayList<Move>(0);
+    public static ArrayList<Ply> plies = new ArrayList<Ply>(0);
 
     public static void main(String[] args) {
+
+        ArrayList<Ply> plies = new ArrayList<Ply>(0);
 
         // start with an 8-point board
         int[] b = new int[8];
@@ -24,6 +27,11 @@ public class Solve {
         // test move solver
         displayBoard(b);
         System.out.println();
+
+        solve(b, plies, diceRolls);
+
+         for(Move m : moves)
+             System.out.println(m.toString());
          
     }
 
@@ -32,11 +40,13 @@ public class Solve {
     * First off, the case for returning is if you have no more moves to work with
     */
     public static void solve(int[] board, ArrayList<Ply> plies, int[] rollsLeft){
+        //
         if(rollsLeft.length == 0){
-            moves.add(new Move(plies.get(0), plies.get(1)));
+            moves.add(new Move(plies));
+            if(plies.size() > 0)
+                plies.remove(plies.size() - 1);
             return;
         }
-       ArrayList<Ply> tempPlies = new ArrayList<Ply>(0);
        int l = board.length;
        int[] boardCopy = Arrays.copyOf(board, board.length);
        for(int i = 0; i < l; i++){
@@ -46,15 +56,15 @@ public class Solve {
                 int moveTo = boardCopy[i - rollsLeft[0]];
                 if (i >= rollsLeft[0] && moveTo > -2) {
                     boardCopy[i]--;
-                    tempPlies.add(new Ply(i+1, i+1-rollsLeft[0]));
+                    plies.add(new Ply(i+1, i+1-rollsLeft[0]));
                     if (moveTo > -1)
                         boardCopy[i - rollsLeft[0]]++;
                     else
                         boardCopy[i - rollsLeft[0]] += 2;
-                } else {
-                    throw new IllegalMoveException(); // might have to leave this out
-                }
-                solve(boardCopy, tempPlies, subarray(rollsLeft)); 
+                 } //else {
+                //     throw new IllegalMoveException(); // might have to leave this out
+                // }
+                solve(boardCopy, plies, subarray(rollsLeft)); 
             }
        }
     }

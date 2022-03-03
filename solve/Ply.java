@@ -26,4 +26,9 @@ public class Ply{
     public int getEndPoint(){
         return Integer.parseInt(move.split("/")[1]);
     }
+
+    @Override
+    public String toString(){
+        return move;
+    }
 }
