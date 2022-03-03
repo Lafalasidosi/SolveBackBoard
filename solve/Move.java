@@ -43,8 +43,15 @@ public class Move{
                 return true;
             else return false;
         }
-        return (this.getPly1().equals(m.getPly2()) && this.getPly2().equals(m.getPly1())) || 
-        (this.getPly1().equals(m.getPly1()) && this.getPly2().equals(m.getPly2()));
+        boolean exactSame = this.getPly1().equals(m.getPly2()) && this.getPly2().equals(m.getPly1());
+        boolean sameButCommuted = this.getPly1().equals(m.getPly1()) && this.getPly2().equals(m.getPly2());
+        boolean inBetweenStepsSame = this.getPly1().getEndPoint() == this.getPly2().getStartPoint() && 
+        m.getPly1().getEndPoint() == m.getPly2().getStartPoint();
+        boolean sameResult = (this.getPly1().getStartPoint() == m.getPly1().getStartPoint() &&
+                                this.getPly2().getEndPoint() == m.getPly2().getEndPoint() && 
+                                inBetweenStepsSame);
+
+        return exactSame || sameButCommuted || sameResult;
     }
 
     @Override
