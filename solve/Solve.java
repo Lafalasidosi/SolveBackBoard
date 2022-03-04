@@ -2,7 +2,6 @@ package solve;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import IllegalMoveException.IllegalMoveException;
 import readFile.FileReader;
 
 public class Solve {
@@ -91,10 +90,8 @@ public class Solve {
     }
 
     public static void prune(ArrayList<Move> moves){
-        // if you can use both dice, you must
-        if(contains2PlyMove(moves)){
-            remove1PlyMoves(moves);
-        }
+        // you must use as many dice as possible
+        removeXPlyMoves(moves, maxMoveSize(moves));
 
         // remove any duplicate entries
         int length = moves.size();
@@ -108,19 +105,24 @@ public class Solve {
         }
     }
 
-    public static boolean contains2PlyMove(ArrayList<Move> moves){
-        for(Move m : moves){
-            if(m.getSize() == 2)
-                return true;
-        }
-        return false;
-    }
-
-    public static void remove1PlyMoves(ArrayList<Move> moves){
+    public static void removeXPlyMoves(ArrayList<Move> moves, int size){
         for(int i = 0; i < moves.size(); i++){
-            if(moves.get(i).getSize() == 1)
+            if(moves.get(i).getSize() < size)
                 moves.remove(i);
         }
+    }
+
+    public static int maxMoveSize(ArrayList<Move> moves){
+        int result = 0;
+        for(Move m : moves){
+            if(m.getSize() == 4){
+                System.out.println("Max move size: " + result);
+                return 4;
+            }
+            result = Math.max(result, m.getSize());
+        }
+        System.out.println("Max move size: " + result);
+        return result;
     }
     
     /**
