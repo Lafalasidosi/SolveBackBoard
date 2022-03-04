@@ -107,8 +107,10 @@ public class Solve {
 
     public static void removeXPlyMoves(ArrayList<Move> moves, int size){
         for(int i = 0; i < moves.size(); i++){
-            if(moves.get(i).getSize() < size)
+            if(moves.get(i).getSize() < size) {
                 moves.remove(i);
+                i--;
+            }
         }
     }
 
