@@ -8,12 +8,14 @@ public class Solve {
     
     public static ArrayList<Move> moves = new ArrayList<Move>(0);
     public static ArrayList<Ply> plies = new ArrayList<Ply>(0);
+    public static boolean hit;
 
     public static void main(String[] args) {
         ArrayList<String[]> boards = FileReader.getBoards(new String[]{"data.txt"});
         int[] board;
         int[] diceRolls;
         int[] reverseDiceRolls;
+        hit = true; // for testing
 
         // take a board from input
         // (translate from Casperson's format to mine)
@@ -31,8 +33,8 @@ public class Solve {
             displayBoard(board);
             System.out.println("\nLegal moves for this board:");
 
-            solve(board, plies, diceRolls);
-            solve(board, plies, reverseDiceRolls);
+            solve(board, plies, diceRolls, i == 8 ? hit : false);
+            solve(board, plies, reverseDiceRolls, i == 8 ? hit : false);
 
             prune(moves);
 
@@ -51,7 +53,7 @@ public class Solve {
     * If an illegal move is encountered, do nothing and continue
     * automatically handles "doubles" since size of rollsLeft is barely mentioned.
     */
-    public static void solve(int[] board, ArrayList<Ply> plies, int[] rollsLeft){
+    public static void solve(int[] board, ArrayList<Ply> plies, int[] rollsLeft, boolean hit){
         // "base case"
         if(rollsLeft.length == 0){
             moves.add(new Move(plies));
@@ -59,8 +61,28 @@ public class Solve {
             return;
         }
 
+        int[] boardCopy = Arrays.copyOf(board, board.length);
+
+        // case when hit
+        if(hit){
+            int moveTo;
+            for(int i = 23; i > 17; i--){
+                moveTo = 24 - rollsLeft[0]; 
+                if(board[i] > -2 && i == 24 - rollsLeft[0]){
+                    hit = false;
+                    plies.add(new Ply(25, moveTo));
+                    if (moveTo > -1)
+                        boardCopy[moveTo]++;
+                    else
+                        boardCopy[moveTo] += 2;
+                 } else {
+                    continue;
+                 }
+                solve(boardCopy, plies, subarray(rollsLeft), hit); 
+            }
+        }
+
        int l = board.length;
-       int[] boardCopy = Arrays.copyOf(board, board.length);
        for(int i = 0; i < l; i++){
             if(board[i] < 1)
                 continue;
@@ -74,12 +96,9 @@ public class Solve {
                     else
                         boardCopy[i - rollsLeft[0]] += 2;
                  } else {
-                    // plies.add(new Ply(i+1, i+1-rollsLeft[0]));
-                    // moves.add(new Move(plies));
-                    // plies.remove(plies.size() - 1);
                     continue;
                  }
-                solve(boardCopy, plies, subarray(rollsLeft)); 
+                solve(boardCopy, plies, subarray(rollsLeft), hit); 
             }
        }
        if(plies.size() > 0) // remove last ply whenever method returns
