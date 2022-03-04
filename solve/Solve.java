@@ -118,12 +118,10 @@ public class Solve {
         int result = 0;
         for(Move m : moves){
             if(m.getSize() == 4){
-                System.out.println("Max move size: " + result);
                 return 4;
             }
             result = Math.max(result, m.getSize());
         }
-        System.out.println("Max move size: " + result);
         return result;
     }
     
